@@ -3,32 +3,29 @@
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Alfa+Slab+One&family=Anton&family=Archivo+Black&family=Bangers&family=Bebas+Neue&family=Black+Ops+One&family=Boogaloo&family=Bowlby+One+SC&family=Bungee+Inline&family=Cabin+Sketch&family=Cherry+Cream+Soda&family=Chewy&family=Chilanka&family=Cinzel&family=Creepster&family=Dancing+Script&family=Ewert&family=Fascinate+Inline&family=Faster+One&family=Fredericka+the+Great&family=Frijole&family=Fugaz+One&family=Gloria+Hallelujah&family=Gravitas+One&family=Great+Vibes&family=Heebo&family=Iceberg&family=Indie+Flower&family=Jolly+Lodger&family=Julius+Sans+One&family=Kalam&family=Kaushan+Script&family=Luckiest+Guy&family=Metal+Mania&family=Monoton&family=Montserrat:wght@900&family=Mountains+of+Christmas&family=Mystery+Quest&family=Nosifer&family=Orbitron&family=Pacifico&family=Permanent+Marker&family=Press+Start+2P&family=Righteous&family=Rock+Salt&family=Rye&family=Shadows+Into+Light&family=Special+Elite&family=Staatliches&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; }
+        body { margin: 0; padding: 0; font-family: sans-serif; background: #555; }
         .controls { 
-            background: #eee; padding: 15px; display: flex; gap: 10px; align-items: center; 
+            background: #eee; padding: 12px; display: flex; gap: 10px; align-items: center; 
             border-bottom: 2px solid #ccc; flex-wrap: wrap; font-size: 14px;
         }
-        .control-group { display: flex; align-items: center; gap: 5px; }
-        .page-container { position: relative; width: 8.5in; height: 11in; margin: 0 auto; }
-        .label-box { position: absolute; }
-        .label-img { 
-            width: 100%; height: 100%; 
-            object-fit: contain; /* Prevents stretching */
-            pointer-events: none; 
-        }
-        .text-container {
-            position: absolute; width: 100%; text-align: center;
-            top: 50%; left: 0; transform: translateY(-50%);
-        }
-        input[type="number"] { width: 50px; }
+        .control-group { display: flex; align-items: center; gap: 4px; }
+        .page-container { position: relative; width: 8.5in; height: 11in; margin: 20px auto; background: white; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .label-box { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .label-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; position: absolute; }
+        .text-container { position: relative; z-index: 1; text-align: center; width: 100%; }
+        .hidden { display: none !important; }
+        input[type="number"] { width: 45px; }
+        input[type="text"] { width: 100px; }
         
-        @media print {
-            .controls { display: none !important; }
-            body { margin: 0; padding: 0; }
-            .text-container div {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                color-adjust: exact !important;
+        /* The Print-Color-Adjust fix forces the printer to use your exact colors */
+        @media print { 
+            .controls { display: none !important; } 
+            .page-container { margin: 0; box-shadow: none; }
+            body { background: white; }
+            * { 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+                color-adjust: exact !important; 
             }
         }
     </style>
@@ -37,142 +34,183 @@
 
 <div class="controls">
     <select id="imageSelector">
-        <option value="Juneberry.png">Juneberry</option>
-        <option value="Cherry Wine.png">Cherry Wine</option>
-		<option value="NewLabel.png">New Label Name</option>
+        <option value="Cherry.png">Cherry</option>
+		<option value="Juneberry.png">Juneberry</option>
+		<option value="AppleBerry.png">Apple Berry</option>
+		<option value="Blackberry.png">Blackberry</option>
+		<option value="Grape.png">Grape</option>
+		<option value="Hibiscus.png">Hibiscus</option>
+		<option value="Mead.png">Mead</option>
+		<option value="PlumJuneStrawberry.png">Plum June Straberry</option>
+		<option value="Strawberry.png">Strawberry</option>
+		<option value="Strawberry Rhubarb.png">Strawberry Rhubarb</option>
+		<option value="CherryApple.png">Cherry Apple</option>
+		<option value="CherryApple2.png">Cherry Apple 2</option>
     </select>
-    
-    <select id="fontSelector" style="width: 150px;"></select>
-
-    <div class="control-group"><input type="checkbox" id="boldToggle"><b>Bold</b></div>
-    <input type="text" id="line1" placeholder="Line 1">
+        <select id="layoutSelector">
+        <option value="1">1 (Center)</option>
+        <option value="2">2 (TL & BR)</option>
+        <option value="3">3 (Diagonal)</option>
+        <option value="4">4 (Corners)</option>
+        <option value="5">5 (Cross)</option>
+        <option value="6">6 (Dice)</option>
+    </select>
+	<div class="control-group">Margin:<input type="number" id="marginInput" value="10">%</div>
+	<input type="text" id="line1" placeholder="Line 1">
     <input type="text" id="line2" placeholder="Line 2">
+	<select id="fontSelector" style="width: 120px;"></select>
     
-    <div class="control-group">Width:<input type="number" id="sizeInput" value="300">px</div>
-    <div class="control-group">Height:<input type="number" id="heightInput" value="300">px</div>
-    <div class="control-group">Spacing:<input type="number" id="spacingInput" value="10">px</div>
-    <div class="control-group">Offset:<input type="number" id="offsetInput" value="0">px</div>
-    <input type="color" id="fontColor" value="#000000">
-    <input type="number" id="fontSize" value="20">px
+
+
+    <div class="control-group"><input type="checkbox" id="boldToggle"><b>B</b></div>
+
     
-    <button id="btnCopy">Copy Settings</button>
+    <div class="control-group">W:<input type="number" id="wInput" value="300"></div>
+    <div class="control-group">H:<input type="number" id="hInput" value="300"></div>
+    <div class="control-group">Size:<input type="number" id="sizeInput" value="20"></div>
+    <div class="control-group">L2%:<input type="number" id="l2SizeInput" value="80"></div>
+    <div class="control-group">Gap:<input type="number" id="gapInput" value="5"></div>
+    <div class="control-group">Offset:<input type="number" id="offsetInput" value="0"></div>
+    
+    <input type="color" id="colorInput" value="#000000">
+    <button id="btnCopy">Copy</button>
     <button id="btnPrint">Print</button>
 </div>
 
-<div class="page-container" id="container"></div>
+<div class="page-container" id="container">
+    <div class="label-box hidden" id="box-0"><img class="label-img" id="img-0"><div class="text-container" id="text-0"></div></div>
+    <div class="label-box hidden" id="box-1"><img class="label-img" id="img-1"><div class="text-container" id="text-1"></div></div>
+    <div class="label-box hidden" id="box-2"><img class="label-img" id="img-2"><div class="text-container" id="text-2"></div></div>
+    <div class="label-box hidden" id="box-3"><img class="label-img" id="img-3"><div class="text-container" id="text-3"></div></div>
+    <div class="label-box hidden" id="box-4"><img class="label-img" id="img-4"><div class="text-container" id="text-4"></div></div>
+    <div class="label-box hidden" id="box-5"><img class="label-img" id="img-5"><div class="text-container" id="text-5"></div></div>
+</div>
 
 <script>
-    const fontList = ["Abril Fatface", "Alfa Slab One", "Anton", "Archivo Black", "Bangers", "Bebas Neue", "Black Ops One", "Boogaloo", "Bowlby One SC", "Bungee Inline", "Cabin Sketch", "Cherry Cream Soda", "Chewy", "Chilanka", "Cinzel", "Creepster", "Dancing Script", "Ewert", "Fascinate Inline", "Faster One", "Fredericka the Great", "Frijole", "Fugaz One", "Gloria Hallelujah", "Gravitas One", "Great Vibes", "Heebo", "Iceberg", "Indie Flower", "Jolly Lodger", "Julius Sans One", "Kalam", "Kaushan Script", "Luckiest Guy", "Metal Mania", "Monoton", "Montserrat", "Mountains of Christmas", "Mystery Quest", "Nosifer", "Orbitron", "Pacifico", "Permanent Marker", "Press Start 2P", "Righteous", "Rock Salt", "Rye", "Shadows Into Light", "Special Elite", "Staatliches"];
-
+const fontList = ["Abril Fatface", "Alfa Slab One", "Anton", "Archivo Black", "Bangers", "Bebas Neue", "Black Ops One", "Boogaloo", "Bowlby One SC", "Bungee Inline", "Cabin Sketch", "Caveat Brush", "Caveat", "Cherry Cream Soda", "Chewy", "Chilanka", "Cinzel", "Creepster", "Dancing Script", "Ewert", "Fascinate Inline", "Faster One", "Fredericka the Great", "Frijole", "Fugaz One", "Gloria Hallelujah", "Gravitas One", "Great Vibes", "Heebo", "Iceberg", "Indie Flower", "Jolly Lodger", "Julius Sans One", "Kalam", "Kaushan Script", "Luckiest Guy", "Metal Mania", "Monoton", "Montserrat", "Mountains of Christmas", "Mystery Quest", "Nosifer", "Orbitron", "Pacifico", "Permanent Marker", "Press Start 2P", "Righteous", "Rock Salt", "Rye", "Shadows Into Light", "Special Elite", "Staatliches"];
     const fontSelect = document.getElementById('fontSelector');
-    fontList.forEach(font => {
+    fontList.forEach(f => {
         let opt = document.createElement('option');
-        opt.value = `'${font}', cursive`;
-        opt.innerHTML = font;
-        opt.style.fontFamily = font;
+        opt.value = `'${f}', cursive`;
+        opt.innerHTML = f;
+        opt.style.fontFamily = f;
         fontSelect.appendChild(opt);
     });
 
+    // Paste copied strings here to save defaults!
     const labelDefaults = {
-        "Juneberry.png": {"l1":"Made: May 12th","l2":"1997","w":"354","h":"406","spacing":"-4","offset":"24","font":"'Boogaloo', cursive","fontSize":"22","color":"#000000","bold":false},
-        "Cherry Wine.png": {"l1":"Made: May 12th","l2":"1997","w":"350","h":"350","spacing":"-2","offset":"-18","font":"'Boogaloo', cursive","fontSize":"24","color":"#ffafaf","bold":false}
+        "Cherry.png": { l1: "October 24th", l2: "2025", w: 340, h: 340, font: "'Caveat Brush', cursive", size: 24, l2Pct: 88, color: "#ffafaf", bold: false, gap: -4, off: -33, margin: 5, layout: 5 },
+		"CherryApple.png": { l1: "November 10th 2025", l2: "", w: 353, h: 356, font: "'Caveat Brush', cursive", size: 24, l2Pct: 88, color: "#fffcdc", bold: false, gap: -4, off: -28, margin: 5, layout: 5 },
+		"Juneberry.png": { l1: "Made: May 12th", l2: "1997", w: 330, h: 360, font: "'Caveat', cursive", size: 32, l2Pct: 90, color: "#ffffff", bold: true, gap: -12, off: 7, margin: 5, layout: 5 },
+		"AppleBerry.png": { l1: "May 12th 1997", l2: "Batch 003", w: 340, h: 340, font: "'Caveat Brush', cursive", size: 24, l2Pct: 70, color: "#ffffff", bold: false, gap: -4, off: 4, margin: 5, layout: 5 },
+		"Blackberry.png": { l1: "Made: April 7th", l2: "2026", w: 340, h: 340, font: "'Caveat Brush', cursive", size: 24, l2Pct: 90, color: "#ffffff", bold: false, gap: -4, off: -56, margin: 5, layout: 5 },
+		"Grape.png": { l1: "May 12th 1997", l2: "Batch 003", w: 340, h: 340, font: "'Caveat Brush', cursive", size: 24, l2Pct: 70, color: "#ffffff", bold: false, gap: -4, off: -31, margin: 5, layout: 5 },
+		"Hibiscus.png": { l1: "May 12th 1997", l2: "Batch 003", w: 370, h: 349, font: "'Dancing Script', cursive", size: 22, l2Pct: 81, color: "#000000", bold: false, gap: 1, off: 148, margin: 5, layout: 6 },
+		"PlumJuneStrawberry.png": { l1: "May 12th 1997", l2: "", w: 340, h: 340, font: "'Caveat Brush', cursive", size: 26, l2Pct: 70, color: "#9b00e8", bold: false, gap: -4, off: 205, margin: 5, layout: 5 },
+		"Strawberry.png": { l1: "May 12th", l2: "1997", w: 296, h: 403, font: "'Caveat', cursive", size: 30, l2Pct: 80, color: "#000000", bold: true, gap: -11, off: 261, margin: 5, layout: 5 },
+		"Strawberry Rhubarb.png": { l1: "Made: May 12th 1997", l2: "", w: 359, h: 519, font: "'Caveat', cursive", size: 30, l2Pct: 80, color: "#e2171b", bold: false, gap: -15, off: 270, margin: 5, layout: 4 },
+		"CherryApple2.png": { l1: "November 10th 2025", l2: "", w: 353, h: 375, font: "'Caveat', cursive", size: 26, l2Pct: 90, color: "#560b15", bold: true, gap: -12, off: 169, margin: 5, layout: 5 },
+		"Mead.png": { l1: "May 12th 1997", l2: "", w: 332, h: 405, font: "'Chewy', cursive", size: 23, l2Pct: 80, color: "#000000", bold: false, gap: -22, off: 253, margin: 5, layout: 5 }
     };
 
-    function updateView() {
-        const imgName = document.getElementById('imageSelector').value;
-        const container = document.getElementById('container');
-        container.innerHTML = '';
-        for(let i=0; i<5; i++) {
-            container.innerHTML += `
-                <div class="label-box" id="box-${i}">
-                    <img src="${imgName}" class="label-img">
-                    <div class="text-container" id="text-container-${i}">
-                        <div id="out1-${i}"></div>
-                        <div id="out2-${i}"></div>
-                    </div>
-                </div>`;
-        }
-        updateLayout();
-        updateText();
-    }
+    function render() {
+        const count = parseInt(document.getElementById('layoutSelector').value);
+        const imgPath = document.getElementById('imageSelector').value;
+        const w = document.getElementById('wInput').value + 'px';
+        const h = document.getElementById('hInput').value + 'px';
+        const m = document.getElementById('marginInput').value + '%';
+        
+        const l1 = document.getElementById('line1').value;
+        const l2 = document.getElementById('line2').value;
+        const fs = document.getElementById('sizeInput').value + 'px';
+        const l2Pct = document.getElementById('l2SizeInput').value / 100;
+        const gap = document.getElementById('gapInput').value + 'px';
+        const off = document.getElementById('offsetInput').value + 'px';
+        const col = document.getElementById('colorInput').value;
+        const font = document.getElementById('fontSelector').value;
+        const fw = document.getElementById('boldToggle').checked ? 'bold' : 'normal';
 
-    function updateLayout() {
-        const w = document.getElementById('sizeInput').value + 'px';
-        const h = document.getElementById('heightInput').value + 'px';
-        const boxes = document.querySelectorAll('.label-box');
-        const coords = [{top:'5%',left:'5%'}, {top:'5%',right:'5%'}, {top:'50%',left:'50%',trans:'translate(-50%,-50%)'}, {bottom:'5%',left:'5%'}, {bottom:'5%',right:'5%'}];
-        boxes.forEach((box, i) => {
-            box.style.width = w; box.style.height = h;
-            Object.assign(box.style, coords[i]);
-            if(coords[i].trans) box.style.transform = coords[i].trans;
-        });
-    }
-
-    function updateText() {
-        const cfg = {
-            l1: document.getElementById('line1').value,
-            l2: document.getElementById('line2').value,
-            color: document.getElementById('fontColor').value,
-            font: document.getElementById('fontSelector').value,
-            size: document.getElementById('fontSize').value + 'px',
-            spacing: document.getElementById('spacingInput').value + 'px',
-            offset: document.getElementById('offsetInput').value + 'px',
-            bold: document.getElementById('boldToggle').checked ? 'bold' : 'normal'
+        const map = { 
+            1: [{top:'50%', left:'50%', t:'translate(-50%,-50%)'}], 
+            2: [{top:m, left:m}, {bottom:m, right:m}], 
+            3: [{top:m, left:m}, {top:'50%', left:'50%', t:'translate(-50%,-50%)'}, {bottom:m, right:m}], 
+            4: [{top:m, left:m}, {top:m, right:m}, {bottom:m, left:m}, {bottom:m, right:m}], 
+            5: [{top:m, left:m}, {top:m, right:m}, {top:'50%', left:'50%', t:'translate(-50%,-50%)'}, {bottom:m, left:m}, {bottom:m, right:m}], 
+            6: [{top:m, left:m}, {top:m, right:m}, {top:'50%', left:m, t:'translateY(-50%)'}, {top:'50%', right:m, t:'translateY(-50%)'}, {bottom:m, left:m}, {bottom:m, right:m}] 
         };
-        for(let i=0; i<5; i++) {
-            const el1 = document.getElementById(`out1-${i}`);
-            const el2 = document.getElementById(`out2-${i}`);
-            const container = document.getElementById(`text-container-${i}`);
-            el1.innerText = cfg.l1; el2.innerText = cfg.l2;
-            [el1, el2].forEach(el => { el.style.fontSize = cfg.size; el.style.color = cfg.color; el.style.fontFamily = cfg.font; el.style.fontWeight = cfg.bold; });
-            el1.style.marginBottom = cfg.spacing;
-            container.style.marginTop = cfg.offset;
+
+        for(let i = 0; i < 6; i++) {
+            const box = document.getElementById(`box-${i}`);
+            if(i < count) {
+                box.classList.remove('hidden');
+                document.getElementById(`img-${i}`).src = imgPath;
+                
+                box.style.width = w; 
+                box.style.height = h;
+                box.style.top = map[count][i].top || 'auto';
+                box.style.left = map[count][i].left || 'auto';
+                box.style.bottom = map[count][i].bottom || 'auto';
+                box.style.right = map[count][i].right || 'auto';
+                box.style.transform = map[count][i].t || 'none';
+                
+                const tBox = document.getElementById(`text-${i}`);
+                tBox.style.marginTop = off;
+                tBox.innerHTML = `
+                    <div style="font-family:${font}; color:${col}; font-weight:${fw}; font-size:${fs}; margin-bottom:${gap};">${l1}</div>
+                    <div style="font-family:${font}; color:${col}; font-weight:${fw}; font-size:calc(${fs} * ${l2Pct});">${l2}</div>
+                `;
+            } else {
+                box.classList.add('hidden');
+            }
         }
     }
 
     function loadDefaults() {
         const type = document.getElementById('imageSelector').value;
         const cfg = labelDefaults[type] || labelDefaults["Juneberry.png"];
+        
         document.getElementById('line1').value = cfg.l1;
         document.getElementById('line2').value = cfg.l2;
-        document.getElementById('sizeInput').value = cfg.w;
-        document.getElementById('heightInput').value = cfg.h;
-        document.getElementById('spacingInput').value = cfg.spacing;
-        document.getElementById('offsetInput').value = cfg.offset;
+        document.getElementById('wInput').value = cfg.w;
+        document.getElementById('hInput').value = cfg.h;
         document.getElementById('fontSelector').value = cfg.font;
-        document.getElementById('fontSize').value = cfg.fontSize;
-        document.getElementById('fontColor').value = cfg.color;
+        document.getElementById('sizeInput').value = cfg.size;
+        document.getElementById('l2SizeInput').value = cfg.l2Pct || 80;
+        document.getElementById('colorInput').value = cfg.color;
         document.getElementById('boldToggle').checked = cfg.bold;
-        updateView();
+        document.getElementById('gapInput').value = cfg.gap || 5;
+        document.getElementById('offsetInput').value = cfg.off || 0;
+        
+        // Added Margin and Layout
+        document.getElementById('marginInput').value = cfg.margin || 10;
+        document.getElementById('layoutSelector').value = cfg.layout || 6;
+        
+        render(); 
     }
 
+    // Inputs Event Listeners
+    document.querySelectorAll('input[type="text"], input[type="number"], input[type="color"]').forEach(el => { el.addEventListener('input', render); });
+    document.querySelectorAll('select, input[type="checkbox"]').forEach(el => { el.addEventListener('change', render); });
     document.getElementById('imageSelector').addEventListener('change', loadDefaults);
-    document.getElementById('fontSelector').addEventListener('change', updateText);
-    document.getElementById('boldToggle').addEventListener('change', updateText);
-    document.getElementById('line1').addEventListener('input', updateText);
-    document.getElementById('line2').addEventListener('input', updateText);
-    document.getElementById('sizeInput').addEventListener('input', updateLayout);
-    document.getElementById('heightInput').addEventListener('input', updateLayout);
-    document.getElementById('spacingInput').addEventListener('input', updateText);
-    document.getElementById('offsetInput').addEventListener('input', updateText);
-    document.getElementById('fontColor').addEventListener('input', updateText);
-    document.getElementById('fontSize').addEventListener('input', updateText);
     document.getElementById('btnPrint').addEventListener('click', () => window.print());
-    document.getElementById('btnCopy').addEventListener('click', () => {
-        const settings = {
-            l1: document.getElementById('line1').value,
-            l2: document.getElementById('line2').value,
-            w: document.getElementById('sizeInput').value,
-            h: document.getElementById('heightInput').value,
-            spacing: document.getElementById('spacingInput').value,
-            offset: document.getElementById('offsetInput').value,
-            font: document.getElementById('fontSelector').value,
-            fontSize: document.getElementById('fontSize').value,
-            color: document.getElementById('fontColor').value,
-            bold: document.getElementById('boldToggle').checked
-        };
-        navigator.clipboard.writeText(JSON.stringify(settings));
-        alert("Settings copied!");
+
+    // Copy Button Logic (Now includes Margin and Layout)
+    document.getElementById('btnCopy').addEventListener('click', async () => {
+        const imgPath = document.getElementById('imageSelector').value;
+        const cfgString = `"${imgPath}": { l1: "${document.getElementById('line1').value}", l2: "${document.getElementById('line2').value}", w: ${document.getElementById('wInput').value}, h: ${document.getElementById('hInput').value}, font: "${document.getElementById('fontSelector').value}", size: ${document.getElementById('sizeInput').value}, l2Pct: ${document.getElementById('l2SizeInput').value}, color: "${document.getElementById('colorInput').value}", bold: ${document.getElementById('boldToggle').checked}, gap: ${document.getElementById('gapInput').value}, off: ${document.getElementById('offsetInput').value}, margin: ${document.getElementById('marginInput').value}, layout: ${document.getElementById('layoutSelector').value} }`;
+        
+        try {
+            await navigator.clipboard.writeText(cfgString);
+            alert("Settings copied to clipboard!\n\n" + cfgString);
+        } catch (err) {
+            const textArea = document.createElement("textarea");
+            textArea.value = cfgString;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            alert("Settings copied to clipboard!");
+        }
     });
 
     loadDefaults();
